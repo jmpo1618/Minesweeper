@@ -57,6 +57,15 @@ class Board: UICollectionViewController {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! Cell
     
         // Configure the cell
+        cell.label.text = ""
+        cell.row = indexPathToRow(indexPath.item)
+        cell.col = indexPathToCol(indexPath.item)
+        // If needed, add new row to the board.
+        if cell.row == 0 {
+            cells.append([Cell]())
+        }
+        // Add cell to appropriate row.
+        cells[cell.row!].append(cell)
     
         return cell
     }
@@ -91,5 +100,43 @@ class Board: UICollectionViewController {
     
     }
     */
+    
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let row = indexPathToRow(indexPath.item)
+        let col = indexPathToCol(indexPath.item)
+        if !started {
+            plantMines(row, startingCol: col)
+            started = true
+        }
+        let selectedCell = cells[row][col]
+        if selectedCell.mine != nil {
+            print("MINE!")
+        }
+        print(selectedCell.row, selectedCell.col)
+    }
+    
+    // MARK: Helpers
+    
+    func indexPathToRow(indexPath: Int) -> Int {
+        return indexPath / 6
+    }
+    
+    func indexPathToCol(indexPath: Int) -> Int {
+        return indexPath % 6
+    }
+    
+    func plantMines(startingRow: Int, startingCol: Int) {
+        for _ in 0..<6 {
+            var planted = false
+            while !planted {
+                let row = Int(arc4random_uniform(6))
+                let col = Int(arc4random_uniform(6))
+                if cells[row][col].mine == nil && row != startingRow && col != startingCol {
+                    cells[row][col].mine = true
+                    planted = true
+                }
+            }
+        }
+    }
 
 }

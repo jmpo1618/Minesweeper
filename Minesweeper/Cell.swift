@@ -12,6 +12,11 @@ class Cell: UICollectionViewCell {
     
     // MARK: Properties
     @IBOutlet weak var label: UILabel!
+    var row: Int?
+    var col: Int?
+    var mine: Bool?
+    var tapped: Bool?
+    var neighborMines: Int?
     
     override func awakeFromNib() {
         super.awakeFromNib()

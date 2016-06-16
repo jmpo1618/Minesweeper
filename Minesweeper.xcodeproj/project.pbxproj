@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E34921B1D061154007AD457 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAB667F1CF78B7F00ED24AF /* Cell.swift */; };
 		2EAB66521CF77E0000ED24AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAB66511CF77E0000ED24AF /* AppDelegate.swift */; };
 		2EAB66541CF77E0000ED24AF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EAB66531CF77E0000ED24AF /* ViewController.swift */; };
 		2EAB66571CF77E0000ED24AF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EAB66551CF77E0000ED24AF /* Main.storyboard */; };
@@ -102,8 +103,8 @@
 		2EAB66501CF77E0000ED24AF /* Minesweeper */ = {
 			isa = PBXGroup;
 			children = (
-				2EAB66811CF78E7600ED24AF /* Board.swift */,
 				2EAB667F1CF78B7F00ED24AF /* Cell.swift */,
+				2EAB66811CF78E7600ED24AF /* Board.swift */,
 				2EAB66511CF77E0000ED24AF /* AppDelegate.swift */,
 				2EAB66531CF77E0000ED24AF /* ViewController.swift */,
 				2EAB66551CF77E0000ED24AF /* Main.storyboard */,
@@ -277,6 +278,7 @@
 			files = (
 				2EAB66831CF78E7600ED24AF /* Board.swift in Sources */,
 				2EAB66671CF77E0100ED24AF /* MinesweeperTests.swift in Sources */,
+				2E34921B1D061154007AD457 /* Cell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

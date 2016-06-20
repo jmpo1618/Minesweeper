@@ -106,6 +106,7 @@ class Board: UICollectionViewController {
         let col = indexPathToCol(indexPath.item)
         if !started {
             plantMines(row, startingCol: col)
+            updateCellValues()
             started = true
         }
         let selectedCell = cells[row][col]
@@ -124,6 +125,8 @@ class Board: UICollectionViewController {
     func indexPathToCol(indexPath: Int) -> Int {
         return indexPath % 6
     }
+    
+    // MARK: Setup
     
     /**
         Plants mines in cells based on random
@@ -164,6 +167,12 @@ class Board: UICollectionViewController {
                 cells[row][col].neighborMines = numMines
             }
         }
+    }
+    
+    func openCell(row: Int, col: Int) {
+        /* Put shit here */
+        // Base case, mine neightbors, just reveal the number of neighbors and do nothing.
+        // Recursive case, zero neighbors, reveal 0 (for now), loop through neighbors and recurse.
     }
 
 }

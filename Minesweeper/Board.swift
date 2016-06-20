@@ -125,6 +125,9 @@ class Board: UICollectionViewController {
         return indexPath % 6
     }
     
+    /**
+        Plants mines in cells based on random
+    */
     func plantMines(startingRow: Int, startingCol: Int) {
         for _ in 0..<6 {
             var planted = false
@@ -135,6 +138,30 @@ class Board: UICollectionViewController {
                     cells[row][col].mine = true
                     planted = true
                 }
+            }
+        }
+    }
+    
+    /**
+        Finds and sets the cell's number of surrounding mines
+    */
+    func updateCellValues(startingRow: Int, startingCol: Int) {
+        for row in 0..<cells.count {
+            for col in 0..<cells[row].count {
+                var numMines = 0
+                if cells[row][col].mine != true {
+                    for x in -1...1 {
+                        let newRow = row + x
+                        for y in -1...1 {
+                            let newCol = col + y
+                            // Check if the surrounding cell is in bounds and is a mine
+                            if newRow >= 0 && newRow < cells.count && newCol >= 0 && newCol < cells[row].count && cells[newRow][newCol].mine == true {
+                                numMines += 1
+                            }
+                        }
+                    }
+                }
+                cells[row][col].neighborMines = numMines
             }
         }
     }

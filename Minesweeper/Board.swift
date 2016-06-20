@@ -145,7 +145,7 @@ class Board: UICollectionViewController {
     /**
         Finds and sets the cell's number of surrounding mines
     */
-    func updateCellValues(startingRow: Int, startingCol: Int) {
+    func updateCellValues() {
         for row in 0..<cells.count {
             for col in 0..<cells[row].count {
                 var numMines = 0

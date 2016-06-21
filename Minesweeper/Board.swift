@@ -112,6 +112,8 @@ class Board: UICollectionViewController {
         let selectedCell = cells[row][col]
         if selectedCell.mine != nil {
             print("MINE!")
+        } else {
+            openCell(row, col: col)
         }
         print(selectedCell.row, selectedCell.col)
     }
@@ -170,9 +172,23 @@ class Board: UICollectionViewController {
     }
     
     func openCell(row: Int, col: Int) {
-        /* Put shit here */
-        // Base case, mine neightbors, just reveal the number of neighbors and do nothing.
+        // Base case, mine neighbors, just reveal the number of neighbors and do nothing.
         // Recursive case, zero neighbors, reveal 0 (for now), loop through neighbors and recurse.
+        if cells[row][col].tapped == false {
+            cells[row][col].tapped = true
+            revealZeroes(row, col: col)
+        }
+    }
+    
+    func revealZeroes(row: Int, col: Int) {
+        if 0 <= row && row < cells.count && 0 <= col && col < cells[row].count && cells[row][col].tapped == false && cells[row][col].neighborMines == 0 {
+            // Call revealZeroes on NSEW cells if cell coordinates are in bounds, it is untapped, and it is a zero
+            cells[row][col].tapped = true
+            revealZeroes(row + 1, col: col)
+            revealZeroes(row - 1, col: col)
+            revealZeroes(row, col: col + 1)
+            revealZeroes(row, col: col - 1)
+        }
     }
 
 }

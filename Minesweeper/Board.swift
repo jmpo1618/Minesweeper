@@ -101,6 +101,17 @@ class Board: UICollectionViewController {
     }
     */
     
+    /**
+        UICollectionViewFlowLayout function to make cells proportional to the screen size.
+    */
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return CGSizeMake(collectionView.bounds.size.width / 7, collectionView.bounds.size.width / 7)
+    }
+    
+    /**
+        Function called every time a cell is tapped.
+    */
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let row = indexPathToRow(indexPath.item)
         let col = indexPathToCol(indexPath.item)

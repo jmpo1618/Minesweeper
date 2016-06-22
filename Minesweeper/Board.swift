@@ -171,23 +171,39 @@ class Board: UICollectionViewController {
         }
     }
     
+    // MARK: Controls
+    
+    /**
+        Opens the specified cell. Uses recursive function reveal zeroes to determine which other neighbors
+        to open.
+    */
     func openCell(row: Int, col: Int) {
-        // Base case, mine neighbors, just reveal the number of neighbors and do nothing.
-        // Recursive case, zero neighbors, reveal 0 (for now), loop through neighbors and recurse.
-        if cells[row][col].tapped == false {
-            cells[row][col].tapped = true
+        // Only open cells that haven't been tapped.
+        if cells[row][col].tapped == nil {
             revealZeroes(row, col: col)
         }
     }
     
+    /**
+        Reveals the specified cell and all its neighbors if none of them is a mine.
+    */
     func revealZeroes(row: Int, col: Int) {
-        if 0 <= row && row < cells.count && 0 <= col && col < cells[row].count && cells[row][col].tapped == false && cells[row][col].neighborMines == 0 {
-            // Call revealZeroes on NSEW cells if cell coordinates are in bounds, it is untapped, and it is a zero
+        // Check if cell coordinates are in bounds and it is untapped,
+        if 0 <= row && row < cells.count && 0 <= col && col < cells[row].count && cells[row][col].tapped == nil {
+            // Reveal the cell
+            cells[row][col].label.text = String(cells[row][col].neighborMines!)
             cells[row][col].tapped = true
-            revealZeroes(row + 1, col: col)
-            revealZeroes(row - 1, col: col)
-            revealZeroes(row, col: col + 1)
-            revealZeroes(row, col: col - 1)
+            // Call revealZeroes on neighbor cells if it is a zero
+            if cells[row][col].neighborMines == 0 {
+                revealZeroes(row + 1, col: col)
+                revealZeroes(row + 1, col: col + 1)
+                revealZeroes(row + 1, col: col - 1)
+                revealZeroes(row - 1, col: col)
+                revealZeroes(row - 1, col: col + 1)
+                revealZeroes(row - 1, col: col - 1)
+                revealZeroes(row, col: col + 1)
+                revealZeroes(row, col: col - 1)
+            }
         }
     }
 

@@ -16,6 +16,7 @@ class Cell: UICollectionViewCell {
     var col: Int?
     var mine: Bool?
     var tapped: Bool?
+    var flagged: Bool?
     var neighborMines: Int?
     
     override func awakeFromNib() {

@@ -15,6 +15,8 @@ class Board: UICollectionViewController {
     var altMode = false
     var started = false
     var cells = [[Cell]]()
+    var revealedCells: Int = 0
+    var flaggedCells: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,8 +126,11 @@ class Board: UICollectionViewController {
         let selectedCell = cells[row][col]
         if selectedCell.mine != nil {
             print("MINE!")
-        } else if altMode{
-            // TODO: flag cell
+        } else if altMode {
+            // Need to add capability of revealing a satisfied cells neighbors
+            cells[row][col].flagged = true
+            cells[row][col].label.text = "F"
+            print("Flagging row: " + String(row) + ", col: " + String(col))
         } else {
             openCell(row, col: col)
         }
@@ -194,14 +199,14 @@ class Board: UICollectionViewController {
     func openCell(row: Int, col: Int) {
         // Only open cells that haven't been tapped.
         if cells[row][col].tapped == nil {
-            revealZeroes(row, col: col)
+            revealCells(row, col: col)
         }
     }
     
     /**
         Reveals the specified cell and all its neighbors if none of them is a mine.
     */
-    func revealZeroes(row: Int, col: Int) {
+    func revealCells(row: Int, col: Int) {
         // Check if cell coordinates are in bounds and it is untapped,
         if 0 <= row && row < cells.count && 0 <= col && col < cells[row].count && cells[row][col].tapped == nil {
             // Reveal the cell
@@ -209,30 +214,24 @@ class Board: UICollectionViewController {
             cells[row][col].tapped = true
             // Call revealZeroes on neighbor cells if it is a zero
             if cells[row][col].neighborMines == 0 {
-                revealZeroes(row + 1, col: col)
-                revealZeroes(row + 1, col: col + 1)
-                revealZeroes(row + 1, col: col - 1)
-                revealZeroes(row - 1, col: col)
-                revealZeroes(row - 1, col: col + 1)
-                revealZeroes(row - 1, col: col - 1)
-                revealZeroes(row, col: col + 1)
-                revealZeroes(row, col: col - 1)
-                /** Maybe switch to this? this is kinda gack ^ but this v calls on itself
                 for x in -1...1 {
                     let newRow = row + x
                     for y in -1...1 {
                         let newCol = col + y
-                        revealZeroes(newRow, col: newCol)
+                        revealCells(newRow, col: newCol)
                     }
                 }
-                */
             }
         }
     }
 
     @IBAction func buttonHeld(sender: AnyObject) {
-        print("held")
-        altMode = true
+        if (started) {
+            print("held")
+            altMode = true
+        } else {
+            print("Game has not been started")
+        }
     }
 
     @IBAction func buttonReleased(sender: AnyObject) {

@@ -19,6 +19,25 @@
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
+                        <view key="backgroundView" contentMode="scaleToFill" id="1S1-cc-K0e">
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hwY-Bh-sxz">
+                                    <rect key="frame" x="158" y="337" width="46" height="30"/>
+                                    <state key="normal" title="Button"/>
+                                    <connections>
+                                        <action selector="buttonHeld:" destination="dN7-d2-STG" eventType="touchDown" id="Ob8-Yv-qK2"/>
+                                        <action selector="buttonReleased:" destination="dN7-d2-STG" eventType="touchUpInside" id="Epj-v6-YdY"/>
+                                        <action selector="buttonReleased:" destination="dN7-d2-STG" eventType="touchUpOutside" id="VaG-B7-9V5"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="hwY-Bh-sxz" firstAttribute="centerY" secondItem="1S1-cc-K0e" secondAttribute="centerY" constant="52" id="fJe-Id-3nJ"/>
+                            </constraints>
+                        </view>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Cell" id="kIa-TV-I6E" customClass="Cell" customModule="Minesweeper" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -51,7 +70,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JIM-r6-Npm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="439" y="385"/>
+            <point key="canvasLocation" x="277" y="369"/>
         </scene>
     </scenes>
 </document>

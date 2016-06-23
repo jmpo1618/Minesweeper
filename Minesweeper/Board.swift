@@ -12,6 +12,7 @@ private let reuseIdentifier = "Cell"
 
 class Board: UICollectionViewController {
     
+    var altMode = false
     var started = false
     var cells = [[Cell]]()
 
@@ -123,6 +124,8 @@ class Board: UICollectionViewController {
         let selectedCell = cells[row][col]
         if selectedCell.mine != nil {
             print("MINE!")
+        } else if altMode{
+            // TODO: flag cell
         } else {
             openCell(row, col: col)
         }
@@ -218,4 +221,14 @@ class Board: UICollectionViewController {
         }
     }
 
+    @IBAction func buttonHeld(sender: AnyObject) {
+        print("held")
+        altMode = true
+    }
+
+    @IBAction func buttonReleased(sender: AnyObject) {
+        print("released")
+        altMode = false
+    }
+ 
 }

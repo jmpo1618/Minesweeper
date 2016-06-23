@@ -217,6 +217,15 @@ class Board: UICollectionViewController {
                 revealZeroes(row - 1, col: col - 1)
                 revealZeroes(row, col: col + 1)
                 revealZeroes(row, col: col - 1)
+                /** Maybe switch to this? this is kinda gack ^ but this v calls on itself
+                for x in -1...1 {
+                    let newRow = row + x
+                    for y in -1...1 {
+                        let newCol = col + y
+                        revealZeroes(newRow, col: newCol)
+                    }
+                }
+                */
             }
         }
     }

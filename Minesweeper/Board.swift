@@ -124,16 +124,21 @@ class Board: UICollectionViewController {
             started = true
         }
         let selectedCell = cells[row][col]
-        if selectedCell.mine != nil {
+        if altMode {
+            // TODO: Add capability of revealing a satisfied cells neighbors
+            if selectedCell.tapped == true {
+                if revealNeighbors(row, col: col) == false {
+                    // Implement losing
+                }
+            } else {
+                flagCells(row, col: col)
+            }
+        } else if selectedCell.mine != nil {
             print("MINE!")
-        } else if altMode {
-            // Need to add capability of revealing a satisfied cells neighbors
-            cells[row][col].flagged = true
-            cells[row][col].label.text = "F"
-            print("Flagging row: " + String(row) + ", col: " + String(col))
-        } else {
+        } else if selectedCell.flagged == nil || selectedCell.flagged == false {
             openCell(row, col: col)
         }
+        // TODO: Implement check for winning here
         print(selectedCell.row, selectedCell.col)
     }
     
@@ -145,6 +150,70 @@ class Board: UICollectionViewController {
     
     func indexPathToCol(indexPath: Int) -> Int {
         return indexPath % 6
+    }
+    
+    /**
+        Flags or unflags cells based on flagged status of a given cell
+    */
+    func flagCells(row: Int, col: Int) {
+        let selectedCell = cells[row][col]
+        if selectedCell.flagged == true {
+            // Flag the unflagged cell
+            selectedCell.label.text = ""
+            selectedCell.flagged = false
+            flaggedCells -= 1
+            print("Unflagging row: " + String(row) + ", col: " + String(col))
+        } else {
+            // Unflag the flagged cell
+            selectedCell.label.text = "F"
+            selectedCell.flagged = true
+            flaggedCells += 1
+            print("Flagging row: " + String(row) + ", col: " + String(col))
+        }
+        print("Current number of flagged cells: " + String(flaggedCells))
+    }
+    
+    /**
+        Reveals neighbors of an alleged satisfied cell
+        Returns whether the cell was correctly satisfied or not
+    */
+    func revealNeighbors(row: Int, col: Int) -> Bool {
+        var numMines: Int = 0
+        var neighborsToReveal: [Cell] = []
+        for x in -1...1 {
+            let newRow = row + x
+            for y in -1...1 {
+                let newCol = col + y
+                if 0 <= newRow && newRow < cells.count && 0 <= newCol && newCol < cells[row].count && !(row == newRow && col == newCol) {
+                    // Ensure cell is in bounds and not the selected cell
+                    let neighborCell = cells[newRow][newCol]
+                    if (neighborCell.mine == true && neighborCell.flagged == false) || (neighborCell.mine == false && neighborCell.flagged == true) {
+                        // User flagged incorrectly
+                        print("Incorrect flagging")
+                        return false
+                    } else {
+                        // User flagged correctly
+                        if neighborCell.mine == true {
+                            // Keep track of number of mines
+                            numMines += 1
+                        } else {
+                            // Keep track of neighbors to reveal if number of mines is satisfied
+                            neighborsToReveal.append(neighborCell)
+                        }
+                    }
+                }
+            }
+        }
+        // If the number of mines was satisfied and there was no error, reveal neighbors
+        print("numMines: " + String(numMines) + ", Actual mine neighbors: " + String(cells[row][col].neighborMines!))
+        if numMines == cells[row][col].neighborMines {
+            for cell in 0..<neighborsToReveal.count {
+                neighborsToReveal[cell].label.text = String(neighborsToReveal[cell].neighborMines!)
+                neighborsToReveal[cell].tapped = true
+                revealedCells += 1
+            }
+        }
+        return true
     }
     
     // MARK: Setup
@@ -212,6 +281,7 @@ class Board: UICollectionViewController {
             // Reveal the cell
             cells[row][col].label.text = String(cells[row][col].neighborMines!)
             cells[row][col].tapped = true
+            revealedCells += 1
             // Call revealZeroes on neighbor cells if it is a zero
             if cells[row][col].neighborMines == 0 {
                 for x in -1...1 {

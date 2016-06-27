@@ -23,4 +23,12 @@ class Cell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
+    func resetCell() {
+        mine = nil
+        tapped = nil
+        flagged = nil
+        neighborMines = nil
+        label.text = ""
+    }
+    
 }

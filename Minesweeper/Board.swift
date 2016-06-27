@@ -128,18 +128,19 @@ class Board: UICollectionViewController {
             // TODO: Add capability of revealing a satisfied cells neighbors
             if selectedCell.tapped == true {
                 if revealNeighbors(row, col: col) == false {
-                    // Implement losing
+                    failureMessage()
                 }
             } else {
                 flagCells(row, col: col)
             }
         } else if selectedCell.mine != nil {
-            print("MINE!")
+            failureMessage()
         } else if selectedCell.flagged == nil || selectedCell.flagged == false {
             openCell(row, col: col)
         }
-        // TODO: Implement check for winning here
-        print(selectedCell.row, selectedCell.col)
+        if flaggedCells == 6 && (flaggedCells + revealedCells) == 36 {
+            successMessage()
+        }
     }
     
     // MARK: Helpers
@@ -307,6 +308,29 @@ class Board: UICollectionViewController {
     @IBAction func buttonReleased(sender: AnyObject) {
         print("released")
         altMode = false
+    }
+    
+    func failureMessage() {
+        let failureAlert = UIAlertController(title: "You lost!", message: "You suck!", preferredStyle: UIAlertControllerStyle.Alert)
+        failureAlert.addAction(UIAlertAction(title: "OK...", style: UIAlertActionStyle.Default, handler: resetBoard))
+        self.presentViewController(failureAlert, animated: true, completion: nil)
+    }
+    
+    func successMessage() {
+        let successAlert = UIAlertController(title: "You won!", message: "Nice dude!", preferredStyle: UIAlertControllerStyle.Alert)
+        successAlert.addAction(UIAlertAction(title: "Cool.", style: UIAlertActionStyle.Default, handler: resetBoard))
+        self.presentViewController(successAlert, animated: true, completion: nil)
+    }
+    
+    func resetBoard(alert: UIAlertAction!) {
+        started = false
+        revealedCells = 0
+        flaggedCells = 0
+        for row in 0..<cells.count {
+            for col in 0..<cells[0].count {
+                cells[row][col].resetCell()
+            }
+        }
     }
  
 }

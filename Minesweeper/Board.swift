@@ -17,6 +17,9 @@ class Board: UICollectionViewController {
     var cells = [[Cell]]()
     var revealedCells: Int = 0
     var flaggedCells: Int = 0
+    var startTime = NSTimeInterval()
+    var timer = NSTimer()
+    @IBOutlet weak var timerLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,6 +125,8 @@ class Board: UICollectionViewController {
             plantMines(row, startingCol: col)
             updateCellValues()
             started = true
+            startTime = NSDate.timeIntervalSinceReferenceDate()
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(Board.updateTime), userInfo: nil, repeats: true)
         }
         let selectedCell = cells[row][col]
         if altMode {
@@ -311,12 +316,14 @@ class Board: UICollectionViewController {
     }
     
     func failureMessage() {
+        timer.invalidate()
         let failureAlert = UIAlertController(title: "You lost!", message: "You suck!", preferredStyle: UIAlertControllerStyle.Alert)
         failureAlert.addAction(UIAlertAction(title: "OK...", style: UIAlertActionStyle.Default, handler: resetBoard))
         self.presentViewController(failureAlert, animated: true, completion: nil)
     }
     
     func successMessage() {
+        timer.invalidate()
         let successAlert = UIAlertController(title: "You won!", message: "Nice dude!", preferredStyle: UIAlertControllerStyle.Alert)
         successAlert.addAction(UIAlertAction(title: "Cool.", style: UIAlertActionStyle.Default, handler: resetBoard))
         self.presentViewController(successAlert, animated: true, completion: nil)
@@ -331,6 +338,23 @@ class Board: UICollectionViewController {
                 cells[row][col].resetCell()
             }
         }
+    }
+    
+    func updateTime() {
+        let currentTime = NSDate.timeIntervalSinceReferenceDate()
+        var elapsedTime = currentTime - startTime
+        
+        let minutes = UInt8(elapsedTime / 60.0)
+        elapsedTime -= NSTimeInterval(minutes * 60)
+        let seconds = UInt8(elapsedTime)
+        elapsedTime -= NSTimeInterval(seconds)
+        let fraction = UInt8(elapsedTime * 100)
+        
+        let minToPrint = minutes > 9 ? String(minutes) : "0" + String(minutes)
+        let secToPrint = seconds > 9 ? String(seconds) : "0" + String(seconds)
+        let fracToPrint = fraction > 9 ? String(fraction) : "0" + String(fraction)
+        
+        timerLabel.text = minToPrint + ":" + secToPrint + ":" + fracToPrint
     }
  
 }

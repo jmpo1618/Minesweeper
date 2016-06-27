@@ -32,10 +32,18 @@
                                         <action selector="buttonReleased:" destination="dN7-d2-STG" eventType="touchUpOutside" id="VaG-B7-9V5"/>
                                     </connections>
                                 </button>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7L5-7y-ksJ">
+                                    <rect key="frame" x="279" y="341" width="42" height="21"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
+                                <constraint firstItem="7L5-7y-ksJ" firstAttribute="centerY" secondItem="1S1-cc-K0e" secondAttribute="centerY" constant="51.5" id="CaM-xw-mSc"/>
                                 <constraint firstItem="hwY-Bh-sxz" firstAttribute="centerY" secondItem="1S1-cc-K0e" secondAttribute="centerY" constant="52" id="fJe-Id-3nJ"/>
+                                <constraint firstItem="7L5-7y-ksJ" firstAttribute="centerX" secondItem="1S1-cc-K0e" secondAttribute="centerX" id="xX7-6O-YS5"/>
                             </constraints>
                         </view>
                         <cells>
@@ -67,6 +75,9 @@
                             <outlet property="delegate" destination="dN7-d2-STG" id="PMP-9f-jt6"/>
                         </connections>
                     </collectionView>
+                    <connections>
+                        <outlet property="timerLabel" destination="7L5-7y-ksJ" id="a75-67-bgI"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JIM-r6-Npm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

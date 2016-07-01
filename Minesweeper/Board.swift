@@ -54,14 +54,19 @@ class Board: UICollectionViewController {
         return 1
     }
 
-
+    /**
+        Sets the number of cells.
+    */
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 36
     }
-
+    
+    /**
+        Initializes each cell and the board.
+    */
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! Cell
-    
+        
         // Configure the cell
         cell.label.text = ""
         cell.row = indexPathToRow(indexPath.item)
@@ -72,95 +77,68 @@ class Board: UICollectionViewController {
         }
         // Add cell to appropriate row.
         cells[cell.row!].append(cell)
-    
+        
         return cell
     }
-
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
-        return false
-    }
-
-    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
     
-    }
-    */
+    // MARK: UICollectionViewFlowLayout
     
     /**
-        UICollectionViewFlowLayout function to make cells proportional to the screen size.
-    */
+     Function to make cells proportional to the screen size.
+     */
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+                        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return CGSizeMake(collectionView.bounds.size.width / 7, collectionView.bounds.size.width / 7)
     }
     
+    // MARK: Setup
+    
     /**
-        Function called every time a cell is tapped.
-    */
-    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let row = indexPathToRow(indexPath.item)
-        let col = indexPathToCol(indexPath.item)
-        if !started {
-            plantMines(row, startingCol: col)
-            updateCellValues()
-            started = true
-            startTime = NSDate.timeIntervalSinceReferenceDate()
-            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(Board.updateTime), userInfo: nil, repeats: true)
-        }
-        let selectedCell = cells[row][col]
-        if altMode {
-            // TODO: Add capability of revealing a satisfied cells neighbors
-            if selectedCell.tapped == true {
-                if revealNeighbors(row, col: col) == false {
-                    failureMessage()
+     Plants mines in cells based on random
+     */
+    func plantMines(startingRow: Int, startingCol: Int) {
+        for _ in 0..<6 {
+            var planted = false
+            while !planted {
+                let row = Int(arc4random_uniform(6))
+                let col = Int(arc4random_uniform(6))
+                if cells[row][col].mine == nil && row != startingRow && col != startingCol {
+                    cells[row][col].mine = true
+                    planted = true
                 }
-            } else {
-                flagCells(row, col: col)
             }
-        } else if selectedCell.mine != nil {
-            failureMessage()
-        } else if selectedCell.flagged == nil || selectedCell.flagged == false {
-            openCell(row, col: col)
-        }
-        if flaggedCells == 6 && (flaggedCells + revealedCells) == 36 {
-            successMessage()
         }
     }
     
-    // MARK: Helpers
-    
-    func indexPathToRow(indexPath: Int) -> Int {
-        return indexPath / 6
+    /**
+     Finds and sets the cell's number of surrounding mines
+     */
+    func updateCellValues() {
+        for row in 0..<cells.count {
+            for col in 0..<cells[row].count {
+                var numMines = 0
+                if cells[row][col].mine != true {
+                    for x in -1...1 {
+                        let newRow = row + x
+                        for y in -1...1 {
+                            let newCol = col + y
+                            // Check if the surrounding cell is in bounds and is a mine
+                            if newRow >= 0 && newRow < cells.count && newCol >= 0 && newCol < cells[row].count && cells[newRow][newCol].mine == true {
+                                numMines += 1
+                            }
+                        }
+                    }
+                }
+                cells[row][col].neighborMines = numMines
+            }
+        }
     }
     
-    func indexPathToCol(indexPath: Int) -> Int {
-        return indexPath % 6
-    }
+    // MARK: Functionality
     
     /**
         Flags or unflags cells based on flagged status of a given cell
-    */
+     */
     func flagCells(row: Int, col: Int) {
         let selectedCell = cells[row][col]
         if selectedCell.flagged == true {
@@ -182,7 +160,7 @@ class Board: UICollectionViewController {
     /**
         Reveals neighbors of an alleged satisfied cell
         Returns whether the cell was correctly satisfied or not
-    */
+     */
     func revealNeighbors(row: Int, col: Int) -> Bool {
         var numMines: Int = 0
         var neighborsToReveal: [Cell] = []
@@ -221,56 +199,49 @@ class Board: UICollectionViewController {
         }
         return true
     }
-    
-    // MARK: Setup
+
     
     /**
-        Plants mines in cells based on random
+        Function called every time a cell is tapped.
     */
-    func plantMines(startingRow: Int, startingCol: Int) {
-        for _ in 0..<6 {
-            var planted = false
-            while !planted {
-                let row = Int(arc4random_uniform(6))
-                let col = Int(arc4random_uniform(6))
-                if cells[row][col].mine == nil && row != startingRow && col != startingCol {
-                    cells[row][col].mine = true
-                    planted = true
+    override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let row = indexPathToRow(indexPath.item)
+        let col = indexPathToCol(indexPath.item)
+        // If this is the first tap, set up the board, cells, and timer.
+        if !started {
+            plantMines(row, startingCol: col)
+            updateCellValues()
+            started = true
+            startTime = NSDate.timeIntervalSinceReferenceDate()
+            timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(Board.updateTime), userInfo: nil, repeats: true)
+        }
+        let selectedCell = cells[row][col]
+        // If alternate mode button is tapped.
+        if altMode {
+            if selectedCell.tapped == true {
+                // If already tapped, try to reveal neighbors that are satisfied.
+                if revealNeighbors(row, col: col) == false {
+                    failureMessage()
                 }
+            } else {
+                // Else just flag it.
+                flagCells(row, col: col)
             }
+        } else if selectedCell.mine != nil {
+            failureMessage()
+        } else if selectedCell.flagged == nil || selectedCell.flagged == false {
+            openCell(row, col: col)
+        }
+        // Check if done.
+        if flaggedCells == 6 && (flaggedCells + revealedCells) == 36 {
+            successMessage()
         }
     }
     
     /**
-        Finds and sets the cell's number of surrounding mines
-    */
-    func updateCellValues() {
-        for row in 0..<cells.count {
-            for col in 0..<cells[row].count {
-                var numMines = 0
-                if cells[row][col].mine != true {
-                    for x in -1...1 {
-                        let newRow = row + x
-                        for y in -1...1 {
-                            let newCol = col + y
-                            // Check if the surrounding cell is in bounds and is a mine
-                            if newRow >= 0 && newRow < cells.count && newCol >= 0 && newCol < cells[row].count && cells[newRow][newCol].mine == true {
-                                numMines += 1
-                            }
-                        }
-                    }
-                }
-                cells[row][col].neighborMines = numMines
-            }
-        }
-    }
-    
-    // MARK: Controls
-    
-    /**
-        Opens the specified cell. Uses recursive function reveal zeroes to determine which other neighbors
-        to open.
-    */
+     Opens the specified cell. Uses recursive function reveal zeroes to determine which other neighbors
+     to open.
+     */
     func openCell(row: Int, col: Int) {
         // Only open cells that haven't been tapped.
         if cells[row][col].tapped == nil {
@@ -279,8 +250,8 @@ class Board: UICollectionViewController {
     }
     
     /**
-        Reveals the specified cell and all its neighbors if none of them is a mine.
-    */
+     Reveals the specified cell and all its neighbors if none of them is a mine.
+     */
     func revealCells(row: Int, col: Int) {
         // Check if cell coordinates are in bounds and it is untapped,
         if 0 <= row && row < cells.count && 0 <= col && col < cells[row].count && cells[row][col].tapped == nil {
@@ -300,7 +271,20 @@ class Board: UICollectionViewController {
             }
         }
     }
+    
+    // MARK: Helpers
+    
+    func indexPathToRow(indexPath: Int) -> Int {
+        return indexPath / 6
+    }
+    
+    func indexPathToCol(indexPath: Int) -> Int {
+        return indexPath % 6
+    }
 
+    /**
+        Called when the alternate button is held.
+    */
     @IBAction func buttonHeld(sender: AnyObject) {
         if (started) {
             print("held")
@@ -310,11 +294,17 @@ class Board: UICollectionViewController {
         }
     }
 
+    /**
+        Called when the alternate button was released.
+     */
     @IBAction func buttonReleased(sender: AnyObject) {
         print("released")
         altMode = false
     }
     
+    /**
+        Stops the timer, displays failure message, and resets the board when prompted.
+     */
     func failureMessage() {
         timer.invalidate()
         let failureAlert = UIAlertController(title: "You lost!", message: "You suck!", preferredStyle: UIAlertControllerStyle.Alert)
@@ -322,6 +312,9 @@ class Board: UICollectionViewController {
         self.presentViewController(failureAlert, animated: true, completion: nil)
     }
     
+    /**
+        Stops the timer, displays success message, and resets the board when prompted.
+     */
     func successMessage() {
         timer.invalidate()
         let successAlert = UIAlertController(title: "You won!", message: "Nice dude!", preferredStyle: UIAlertControllerStyle.Alert)
@@ -329,6 +322,9 @@ class Board: UICollectionViewController {
         self.presentViewController(successAlert, animated: true, completion: nil)
     }
     
+    /**
+        Resets the board atributes and the atributes in each cell.
+    */
     func resetBoard(alert: UIAlertAction!) {
         started = false
         revealedCells = 0
@@ -340,21 +336,60 @@ class Board: UICollectionViewController {
         }
     }
     
+    /**
+        Function called by the timer to update the elapsed time since the game started.
+    */
     func updateTime() {
+        // Get the elapsed time.
         let currentTime = NSDate.timeIntervalSinceReferenceDate()
         var elapsedTime = currentTime - startTime
         
+        // Get minutes, seconds, and fraction of seconds from the elapsed time.
         let minutes = UInt8(elapsedTime / 60.0)
         elapsedTime -= NSTimeInterval(minutes * 60)
         let seconds = UInt8(elapsedTime)
         elapsedTime -= NSTimeInterval(seconds)
         let fraction = UInt8(elapsedTime * 100)
         
+        // Produce strings out of those (add trailing zero when necessary)
         let minToPrint = minutes > 9 ? String(minutes) : "0" + String(minutes)
         let secToPrint = seconds > 9 ? String(seconds) : "0" + String(seconds)
         let fracToPrint = fraction > 9 ? String(fraction) : "0" + String(fraction)
         
         timerLabel.text = minToPrint + ":" + secToPrint + ":" + fracToPrint
     }
+    
+    /* UNUSED FOR THE MOMENT, MIGHT BE USEFUL LATER */
+    
+    // MARK: UICollectionViewDelegate
+    
+    /*
+     // Uncomment this method to specify if the specified item should be highlighted during tracking
+     override func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+     return true
+     }
+     */
+    
+    /*
+     // Uncomment this method to specify if the specified item should be selected
+     override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+     return true
+     }
+     */
+    
+    /*
+     // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
+     override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+     return false
+     }
+     
+     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
+     return false
+     }
+     
+     override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+     
+     }
+     */
  
 }

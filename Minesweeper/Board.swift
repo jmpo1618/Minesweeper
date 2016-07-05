@@ -20,9 +20,17 @@ class Board: UICollectionViewController {
     var startTime = NSTimeInterval()
     var timer = NSTimer()
     @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var navItem: UINavigationItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        super.viewDidLoad()
+        
+        // Top bar setup.
+        let resetButton = UIBarButtonItem(title: "Reset", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(Board.resetBoard))
+        navItem.title = "Minesweeper"
+        navItem.leftBarButtonItem = resetButton
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -306,9 +314,8 @@ class Board: UICollectionViewController {
         Stops the timer, displays failure message, and resets the board when prompted.
      */
     func failureMessage() {
-        timer.invalidate()
         let failureAlert = UIAlertController(title: "You lost!", message: "You suck!", preferredStyle: UIAlertControllerStyle.Alert)
-        failureAlert.addAction(UIAlertAction(title: "OK...", style: UIAlertActionStyle.Default, handler: resetBoard))
+        failureAlert.addAction(UIAlertAction(title: "OK...", style: UIAlertActionStyle.Default, handler: resetFromAlert))
         self.presentViewController(failureAlert, animated: true, completion: nil)
     }
     
@@ -316,16 +323,23 @@ class Board: UICollectionViewController {
         Stops the timer, displays success message, and resets the board when prompted.
      */
     func successMessage() {
-        timer.invalidate()
         let successAlert = UIAlertController(title: "You won!", message: "Nice dude!", preferredStyle: UIAlertControllerStyle.Alert)
-        successAlert.addAction(UIAlertAction(title: "Cool.", style: UIAlertActionStyle.Default, handler: resetBoard))
+        successAlert.addAction(UIAlertAction(title: "Cool.", style: UIAlertActionStyle.Default, handler: resetFromAlert))
         self.presentViewController(successAlert, animated: true, completion: nil)
+    }
+    
+    /**
+        Called by the alert messages displayed for success or failure.
+    */
+    func resetFromAlert(alert: UIAlertAction!) {
+        self.resetBoard()
     }
     
     /**
         Resets the board atributes and the atributes in each cell.
     */
-    func resetBoard(alert: UIAlertAction!) {
+    func resetBoard() {
+        timer.invalidate()
         started = false
         revealedCells = 0
         flaggedCells = 0

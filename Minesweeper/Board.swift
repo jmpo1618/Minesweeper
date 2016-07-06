@@ -25,8 +25,6 @@ class Board: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        super.viewDidLoad()
-        
         // Top bar setup.
         let resetButton = UIBarButtonItem(title: "Reset", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(Board.resetBoard))
         navItem.title = "Minesweeper"
@@ -39,6 +37,21 @@ class Board: UICollectionViewController {
         // self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        let altButton = UIButton(frame: CGRect(x: 0, y: 0, width: 77, height: 20))
+        altButton.addTarget(self, action: #selector(Board.buttonHeld), forControlEvents: .TouchDown)
+        altButton.addTarget(self, action: #selector(Board.buttonReleased), forControlEvents: [.TouchUpInside, .TouchUpOutside])
+        altButton.setTitle("AltButton", forState: .Normal)
+        altButton.setTitleColor(self.view.tintColor, forState: .Normal)
+        var items = [UIBarButtonItem]()
+        let altBarButton = UIBarButtonItem(customView: altButton)
+        altBarButton.style = UIBarButtonItemStyle.Plain
+        items.append(altBarButton)
+        self.navigationController?.toolbar.setItems(items, animated: false)
+        
+        super.viewDidAppear(animated)
     }
 
     override func didReceiveMemoryWarning() {

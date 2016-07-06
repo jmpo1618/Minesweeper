@@ -23,15 +23,6 @@
                             <rect key="frame" x="0.0" y="-64" width="600" height="600"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hwY-Bh-sxz">
-                                    <rect key="frame" x="158" y="391" width="46" height="30"/>
-                                    <state key="normal" title="Button"/>
-                                    <connections>
-                                        <action selector="buttonHeld:" destination="dN7-d2-STG" eventType="touchDown" id="Ob8-Yv-qK2"/>
-                                        <action selector="buttonReleased:" destination="dN7-d2-STG" eventType="touchUpInside" id="Epj-v6-YdY"/>
-                                        <action selector="buttonReleased:" destination="dN7-d2-STG" eventType="touchUpOutside" id="VaG-B7-9V5"/>
-                                    </connections>
-                                </button>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7L5-7y-ksJ">
                                     <rect key="frame" x="279" y="395" width="42" height="21"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -42,9 +33,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="7L5-7y-ksJ" firstAttribute="centerY" secondItem="1S1-cc-K0e" secondAttribute="centerY" constant="105.5" id="HbR-CW-7X6"/>
-                                <constraint firstItem="hwY-Bh-sxz" firstAttribute="centerX" secondItem="1S1-cc-K0e" secondAttribute="centerX" constant="-119" id="aX1-9j-zsX"/>
                                 <constraint firstItem="7L5-7y-ksJ" firstAttribute="centerX" secondItem="1S1-cc-K0e" secondAttribute="centerX" id="f52-XG-q5N"/>
-                                <constraint firstItem="hwY-Bh-sxz" firstAttribute="centerY" secondItem="1S1-cc-K0e" secondAttribute="centerY" constant="106" id="i7D-eA-0y5"/>
                             </constraints>
                         </view>
                         <cells>
@@ -76,6 +65,7 @@
                             <outlet property="delegate" destination="dN7-d2-STG" id="PMP-9f-jt6"/>
                         </connections>
                     </collectionView>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="kuK-uy-uDx"/>
                     <connections>
                         <outlet property="navItem" destination="kuK-uy-uDx" id="HUd-eY-9LJ"/>
@@ -89,13 +79,17 @@
         <!--Navigation Controller-->
         <scene sceneID="YI8-jx-fdM">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="i8x-HC-XUm" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="i8x-HC-XUm" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xy5-f1-HQb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="mJf-sx-mpK">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="dN7-d2-STG" kind="relationship" relationship="rootViewController" id="9sj-qA-t57"/>
                     </connections>

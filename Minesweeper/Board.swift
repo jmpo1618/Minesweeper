@@ -19,8 +19,8 @@ class Board: UICollectionViewController {
     var flaggedCells: Int = 0
     var startTime = NSTimeInterval()
     var timer = NSTimer()
-    @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var navItem: UINavigationItem!
+    var timerLabel: UILabel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,15 +40,27 @@ class Board: UICollectionViewController {
     }
     
     override func viewDidAppear(animated: Bool) {
+        // Set up altButton to add to the bottom toolbar.
         let altButton = UIButton(frame: CGRect(x: 0, y: 0, width: 77, height: 20))
         altButton.addTarget(self, action: #selector(Board.buttonHeld), forControlEvents: .TouchDown)
         altButton.addTarget(self, action: #selector(Board.buttonReleased), forControlEvents: [.TouchUpInside, .TouchUpOutside])
         altButton.setTitle("AltButton", forState: .Normal)
         altButton.setTitleColor(self.view.tintColor, forState: .Normal)
+        
+        // Flexible space to align items in the bottom toolbar.
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        
+        // Set up timerLable for bottom toolbar.
+        timerLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 77, height: 20))
+        
+        // Add items above to array and add to the toolbar.
         var items = [UIBarButtonItem]()
         let altBarButton = UIBarButtonItem(customView: altButton)
         altBarButton.style = UIBarButtonItemStyle.Plain
         items.append(altBarButton)
+        items.append(flexibleSpace)
+        let altBarTimerLabel = UIBarButtonItem(customView: timerLabel!)
+        items.append(altBarTimerLabel)
         self.navigationController?.toolbar.setItems(items, animated: false)
         
         super.viewDidAppear(animated)
@@ -383,7 +395,7 @@ class Board: UICollectionViewController {
         let secToPrint = seconds > 9 ? String(seconds) : "0" + String(seconds)
         let fracToPrint = fraction > 9 ? String(fraction) : "0" + String(fraction)
         
-        timerLabel.text = minToPrint + ":" + secToPrint + ":" + fracToPrint
+        timerLabel!.text = minToPrint + ":" + secToPrint + ":" + fracToPrint
     }
     
     /* UNUSED FOR THE MOMENT, MIGHT BE USEFUL LATER */
